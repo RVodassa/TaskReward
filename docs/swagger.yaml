@@ -117,7 +117,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: Успешная регистрация
+          description: Успешная аутентификация
           schema:
             $ref: '#/definitions/api.LoginResponse'
         "400":
@@ -132,7 +132,7 @@ paths:
           description: Ошибка на сервере
           schema:
             $ref: '#/definitions/api.ErrorResponse'
-      summary: Авторизация пользователя
+      summary: Аутентификация пользователя
       tags:
       - auth
   /auth/register:
@@ -141,7 +141,7 @@ paths:
       - application/json
       description: Создает нового пользователя, возвращает информацию о новом пользователе.
       parameters:
-      - description: ID пользователя, который вас пригласил
+      - description: ID реферала, если нет укажите 0
         in: query
         name: referID
         required: true

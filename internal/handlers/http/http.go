@@ -237,7 +237,7 @@ func (h *Handler) StatusUser(w http.ResponseWriter, r *http.Request) {
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Param referID query string true "ID пользователя, который вас пригласил"
+// @Param referID query string true "ID реферала, если нет укажите 0"
 // @Param request body api.AuthRequest true "Логин и пароль"
 // @Success 200 {object} api.StatusUserResponse "Успешная регистрация"
 // @Failure 403 {object} api.ErrorResponse "Unauthorized"
@@ -249,7 +249,6 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 
 	var request api.AuthRequest
 
-	// Декодирование запроса
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		log.Printf("%s: ошибка при декодировании запроса: %v", op, err)
 		Responder(w, http.StatusBadRequest, api.ErrorResponse{Status: false, Message: ErrInvalidJSON.Error()})
@@ -262,7 +261,6 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Получение refer_id из query-параметра
 	var referID uint64
 	var err error
 
@@ -303,12 +301,12 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 }
 
 // Login godoc
-// @Summary Авторизация пользователя
+// @Summary Аутентификация пользователя
 // @Description Возвращает JWT токен для доступа к защищенным маршрутам.
 // @Tags auth
 // @Produce json
 // @Param request body api.AuthRequest true "Логин и пароль"
-// @Success 200 {object} api.LoginResponse"Успешная регистрация"
+// @Success 200 {object} api.LoginResponse "Успешная аутентификация"
 // @Failure 403 {object} api.ErrorResponse "Unauthorized"
 // @Failure 400 {object} api.ErrorResponse "Ошибка клиента"
 // @Failure 500 {object} api.ErrorResponse "Ошибка на сервере"
@@ -318,7 +316,6 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 
 	var request api.AuthRequest
 
-	// Декодирование запроса
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		log.Printf("%s: ошибка при декодировании запроса: %v", op, err)
 		Responder(w, http.StatusBadRequest, api.ErrorResponse{Status: false, Message: ErrInvalidJSON.Error()})

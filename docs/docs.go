@@ -30,7 +30,7 @@ const docTemplate = `{
                 "tags": [
                     "auth"
                 ],
-                "summary": "Авторизация пользователя",
+                "summary": "Аутентификация пользователя",
                 "parameters": [
                     {
                         "description": "Логин и пароль",
@@ -44,7 +44,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Успешная регистрация",
+                        "description": "Успешная аутентификация",
                         "schema": {
                             "$ref": "#/definitions/api.LoginResponse"
                         }
@@ -86,7 +86,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "ID пользователя, который вас пригласил",
+                        "description": "ID реферала, если нет укажите 0",
                         "name": "referID",
                         "in": "query",
                         "required": true
