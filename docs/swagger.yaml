@@ -1,0 +1,308 @@
+definitions:
+  api.AuthRequest:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+  api.ErrorResponse:
+    properties:
+      message:
+        type: string
+      status:
+        type: boolean
+    type: object
+  api.GetAllTasksResponse:
+    properties:
+      message:
+        type: string
+      status:
+        type: boolean
+      tasks:
+        items:
+          $ref: '#/definitions/models.Task'
+        type: array
+    type: object
+  api.LeaderBoardResponse:
+    properties:
+      listLeader:
+        items:
+          $ref: '#/definitions/models.User'
+        type: array
+      message:
+        type: string
+      status:
+        type: boolean
+    type: object
+  api.LoginResponse:
+    properties:
+      jwtoken:
+        type: string
+      message:
+        type: string
+      status:
+        type: boolean
+    type: object
+  api.StatusUserResponse:
+    properties:
+      message:
+        type: string
+      status:
+        type: boolean
+      user:
+        $ref: '#/definitions/models.User'
+    type: object
+  api.TaskCompletedResponse:
+    properties:
+      message:
+        type: string
+      status:
+        type: boolean
+      task:
+        $ref: '#/definitions/models.Task'
+    type: object
+  models.Task:
+    properties:
+      bonus:
+        type: integer
+      completed_at:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      status:
+        description: '"не завершено", "завершено"'
+        type: string
+      user_id:
+        type: integer
+    type: object
+  models.User:
+    properties:
+      balance:
+        type: integer
+      created_at:
+        type: string
+      id:
+        type: integer
+      login:
+        type: string
+      refer_id:
+        type: integer
+    type: object
+info:
+  contact:
+    email: assadov.spb@bk.ru
+    name: API Support
+  description: API для работы с пользователями и выполнения задач
+  license:
+    name: Free open source
+  title: TaskReward API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      description: Возвращает JWT токен для доступа к защищенным маршрутам.
+      parameters:
+      - description: Логин и пароль
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.AuthRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешная регистрация
+          schema:
+            $ref: '#/definitions/api.LoginResponse'
+        "400":
+          description: Ошибка клиента
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "403":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Ошибка на сервере
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Авторизация пользователя
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Создает нового пользователя, возвращает информацию о новом пользователе.
+      parameters:
+      - description: ID пользователя, который вас пригласил
+        in: query
+        name: referID
+        required: true
+        type: string
+      - description: Логин и пароль
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.AuthRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешная регистрация
+          schema:
+            $ref: '#/definitions/api.StatusUserResponse'
+        "400":
+          description: Ошибка клиента
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "403":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Ошибка на сервере
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Регистрация пользователя
+      tags:
+      - auth
+  /users/{userID}/status:
+    get:
+      description: Возвращает информацию о пользователе в случае успешной операции
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: userID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешно
+          schema:
+            $ref: '#/definitions/api.StatusUserResponse'
+        "400":
+          description: Ошибка клиента
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "403":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Ошибка на сервере
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Получить информацию о пользователе по ID
+      tags:
+      - Users
+  /users/{userID}/tasks/{taskID}/complete:
+    post:
+      description: Возвращает информацию о выполненной задаче
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: userID
+        required: true
+        type: string
+      - description: ID задачи
+        in: path
+        name: taskID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешно
+          schema:
+            $ref: '#/definitions/api.TaskCompletedResponse'
+        "400":
+          description: Ошибка клиента
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "403":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Ошибка на сервере
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Выполнить задачу
+      tags:
+      - Tasks
+  /users/leaderboard:
+    get:
+      description: Возвращает топ 10 лидеров по балансу
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешно
+          schema:
+            $ref: '#/definitions/api.LeaderBoardResponse'
+        "400":
+          description: Ошибка клиента
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "403":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Ошибка на сервере
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Получить список лидеров
+      tags:
+      - Users
+  /users/tasks/activetasks:
+    get:
+      description: возвращает список активных задач
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешно
+          schema:
+            $ref: '#/definitions/api.GetAllTasksResponse'
+        "400":
+          description: Ошибка клиента
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "403":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Ошибка на сервере
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Получить список активных задач
+      tags:
+      - Tasks
+securityDefinitions:
+  BearerAuth:
+    description: Укажите свой токен 'Bearer JWT_TOKEN'.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
