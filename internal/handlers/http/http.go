@@ -80,7 +80,7 @@ func (h *Handler) GetAllActiveTask(w http.ResponseWriter, r *http.Request) {
 
 	resp := api.GetAllTasksResponse{
 		Status:  true,
-		Message: fmt.Sprintf("Список активных задач\nКол-во задач: %d", len(listTask)),
+		Message: fmt.Sprintf("Список активных задач. Кол-во задач: %d", len(listTask)),
 		Tasks:   listTask,
 	}
 
@@ -119,7 +119,7 @@ func (h *Handler) LeaderBoard(w http.ResponseWriter, r *http.Request) {
 
 	resp := api.LeaderBoardResponse{
 		Status:     true,
-		Message:    fmt.Sprintf("Доска лидеров\nКол.во: %d", len(users)),
+		Message:    fmt.Sprintf("Доска лидеров. Кол.во: %d", len(users)),
 		ListLeader: users,
 	}
 

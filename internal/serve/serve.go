@@ -19,7 +19,7 @@ type Serve struct {
 func NewServe(port string, handler http.Handler) *Serve {
 	return &Serve{
 		httpSrv: &http.Server{
-			Addr:         port,
+			Addr:         ":" + port,
 			Handler:      handler,
 			ReadTimeout:  10 * time.Second,
 			WriteTimeout: 10 * time.Second,
@@ -36,10 +36,10 @@ func (s *Serve) RunServe() error {
 	// Запуск сервера в горутине
 	serverErr := make(chan error, 1)
 	go func() {
+		log.Println(fmt.Sprintf("cервер доступен на порту %s", s.httpSrv.Addr))
 		if err := s.httpSrv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			serverErr <- fmt.Errorf("%s: ошибка запуска сервера: %v", op, err)
 		}
-		log.Println(fmt.Sprintf("Сервер доступен на порту: %s", s.httpSrv.Addr), "op", op)
 	}()
 
 	// Ожидание graceful shutdowns
