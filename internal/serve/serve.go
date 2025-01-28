@@ -28,8 +28,6 @@ func NewServe(port string, handler http.Handler) *Serve {
 }
 
 // RunServe запускает HTTP-сервер с поддержкой graceful shutdown.
-// port - порт, на котором будет запущен сервер (например, ":8080").
-// handler - обработчик запросов (например, *chi.Mux).
 // Возвращает ошибку, если сервер не удалось запустить или завершить.
 func (s *Serve) RunServe() error {
 	const op = "serve.RunServe"
@@ -41,7 +39,7 @@ func (s *Serve) RunServe() error {
 		if err := s.httpSrv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			serverErr <- fmt.Errorf("%s: ошибка запуска сервера: %v", op, err)
 		}
-		log.Println(fmt.Sprintf("Сервер доступен по адресу: s%s", s.httpSrv.Addr), "op", op)
+		log.Println(fmt.Sprintf("Сервер доступен на порту: %s", s.httpSrv.Addr), "op", op)
 	}()
 
 	// Ожидание graceful shutdowns

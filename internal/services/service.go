@@ -32,7 +32,7 @@ func NewService(repo interfaces.RepositoryProvider) *Service {
 }
 
 func (s *Service) GetAllActiveTask(ctx context.Context) ([]*models.Task, error) {
-	const op = "service.GetAllActiveTask"
+	const op = "services.GetAllActiveTask"
 
 	tasks, err := s.repo.GetAllActiveTask(ctx)
 	if err != nil {
@@ -87,7 +87,7 @@ func (s *Service) StatusUser(ctx context.Context, userID uint) (*models.User, er
 }
 
 func (s *Service) Login(ctx context.Context, login, password string) error {
-	const op = "services.Service.Login"
+	const op = "services.Login"
 
 	// Получение пользователя по логину
 	getUser, err := s.repo.GetUserByLogin(ctx, login)
@@ -111,7 +111,7 @@ func (s *Service) Login(ctx context.Context, login, password string) error {
 }
 
 func (s *Service) RegisterUser(ctx context.Context, login, password string, referID uint) (*models.User, error) {
-	const op = "services.Service.RegisterUser"
+	const op = "services.RegisterUser"
 
 	if login == "" || password == "" {
 		return nil, ErrCredentialsRequired
@@ -144,7 +144,7 @@ func (s *Service) RegisterUser(ctx context.Context, login, password string, refe
 }
 
 func (s *Service) AddTask(ctx context.Context, description string, bonus uint) error {
-	const op = "services.Service.AddTask"
+	const op = "services.AddTask"
 
 	// Новый инстанс пользователя
 	task := models.NewTask(description, bonus)
@@ -170,8 +170,7 @@ func checkPassword(hashedPassword, password string) error {
 	return nil
 }
 
-// HashPassword хэширует пароль с использованием bcrypt.
-// Возвращает хэшированный пароль или ошибку, если хэширование не удалось.
+// HashPassword хэширует пароль
 func hashPassword(password string) (string, error) {
 	const op = "services.HashPassword"
 

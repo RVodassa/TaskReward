@@ -9,10 +9,7 @@ import (
 	"github.com/RVodassa/TaskReward/internal/serve"
 	"github.com/RVodassa/TaskReward/internal/services"
 	"log"
-)
-
-const (
-	Port = ":8080"
+	"os"
 )
 
 type App struct {
@@ -30,12 +27,13 @@ func (app *App) Run() error {
 		log.Fatal(err)
 		return err
 	}
-
+	
+	port := os.Getenv("SERVER_PORT")
 	Repository := repository.NewRepo(database)
 	Service := services.NewService(Repository)
 	Controller := http_handlers.NewHandler(Service)
 	router := http_handlers.NewRouter(Controller)
-	newServe := serve.NewServe(Port, router)
+	newServe := serve.NewServe(port, router)
 
 	// Генерация задач
 	err = GenerateTask(10, Service)

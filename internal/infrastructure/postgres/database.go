@@ -55,8 +55,6 @@ func ConnectDB() (*pgxpool.Pool, error) {
 	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s",
 		config["user"], config["password"], config["host"], config["port"], config["name"], config["ssl"])
 
-	log.Printf("%s: подключение к базе данных по адресу: %s\n", op, connStr)
-
 	// Подключаемся к базе данных
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -80,6 +78,7 @@ func ConnectDB() (*pgxpool.Pool, error) {
 		log.Printf("%s: %s\n", op, err)
 		return nil, err
 	}
+	log.Println("выполнено: миграции структур в базу данных")
 
 	return db, nil
 }
@@ -110,6 +109,5 @@ func runMigrations(connStr string) error {
 		return fmt.Errorf("%s: не удалось применить миграции: %v", op, err)
 	}
 
-	log.Println("выполнено: миграции структур для базы данных")
 	return nil
 }

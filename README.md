@@ -35,8 +35,12 @@ DB_PORT=5432
 DB_USER=user
 DB_PASSWORD=password
 DB_NAME=appdb
+DB_SSL=disable
 JWT_SECRET=your_jwt_secret_key
+JWT_EXPIRATION=1h
+SERVER_PORT:8080
 ```
+Убедитесь что на вашем хостинге свободен порт указанный SERVER_PORT
 
 #### 3. Запуск приложения
 

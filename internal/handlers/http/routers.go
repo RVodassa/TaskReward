@@ -21,13 +21,13 @@ func NewRouter(controller *Handler) *chi.Mux {
 
 	// Публичные маршруты (без авторизации)
 	r.Route("/auth", func(r chi.Router) {
-		r.Post("/register", controller.Register) // auth/register
-		r.Post("/login", controller.Login)       // auth/login
+		r.Post("/register", controller.Register)
+		r.Post("/login", controller.Login)
 	})
 	r.Group(func(r chi.Router) {
-		r.Use(jwtauth.Verifier(jwtAuth))      // Извлекает токен из запроса
-		r.Use(jwtauth.Authenticator(jwtAuth)) // Проверяет токен
-		r.Route("/users", func(r chi.Router) {
+		r.Use(jwtauth.Verifier(jwtAuth))       // Извлекает токен из запроса
+		r.Use(jwtauth.Authenticator(jwtAuth))  // Проверяет токен
+		r.Route("/users", func(r chi.Router) { //
 			r.Get("/{userID}/status", controller.StatusUser)
 			r.Post("/{userID}/tasks/{taskID}/complete", controller.TaskComplete)
 			r.Get("/leaderboard", controller.LeaderBoard)
